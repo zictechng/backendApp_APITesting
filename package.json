@@ -25,6 +25,7 @@
     "https-proxy-agent": "^7.0.4",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "mailtrap": "^3.3.0",
     "moment": "^2.30.1",
     "mongodb": "^6.5.0",
     "mongoose": "^8.2.3",

@@ -7,8 +7,13 @@ const bcrypt = require('bcrypt');
 
 const multer = require("multer");
 
+const {MailtrapClient} = require('mailtrap')
+
 // email method here
 const transporterMailer = require('../controllers/mailSender');
+
+const TOKEN = process.env.EMAIL_API_PASSWORD;
+const client = new MailtrapClient({ token: TOKEN });
 
 const AppSetting = require('../models/AppSettingDetails')
 const Ticket = require('../models/ticketData');
@@ -74,6 +79,19 @@ router.post("/submit_ticketWebsite", async (req, res) => {
         tick_id: ticketNumber,
         ticket_closed:'Opened'
        })
+
+
+       
+
+/**
+ * For this example to work, you need to set up a sending domain,
+ * and obtain a token that is authorized to send from the domain.
+ */
+
+          
+
+
+          
   
    // email notification to sender here
    if(req.body.customer_email){
@@ -84,17 +102,25 @@ router.post("/submit_ticketWebsite", async (req, res) => {
         const mailBody = loginEmail(appName, 'Support Contact Message', req.body.customer_name, `this is to notify you that your message with Ticket ID ${ticketNumber} was submitted successfully, we will get in-touch shortly thank you.`, logoImage)
         const TextBody = loginText(req.body.customer_name, `this is to notify you that your message with ticket ID ${ticketNumber} was submitted successfully, our staff will get in-touch thank you.`);
         let tickMailOptions = {
-        from: `${appName + ' Support'} <noreply@ozaapp.com>`,
-        to: req.body.customer_email,
+        //const sender = { name: "Abel Portfolio", email: SENDER_EMAIL };
+        from: { name: `${appName + ' Support'}`, email: '<noreply@ozaapp.com>' },
+        to: [{ email: req.body.customer_email }],
         subject: 'Support Contact Message!',
         text: TextBody,
         html: mailBody,
       }
+          
+          client
+            .send(tickMailOptions)
+            .then(console.log)
+            .catch(console.error);
+
       // async..await is not allowed in global scope, must use a wrapper
-      async function main() {
-        const info = await transporterMailer.sendMail(tickMailOptions);
-        }
-    main().catch('Message Error', console.error);
+      // async function main() {
+
+      //   const info = await transporterMailer.sendMail(tickMailOptions);
+      //   }
+    // main().catch('Message Error', console.error);
       }).catch(console.error.bind(console))
     }
   
@@ -163,6 +189,7 @@ router.post("/newsletter_subscriptions", async (req, res) => {
             text: TextBody,
             html: mailBody,
         }
+        
           // async..await is not allowed in global scope, must use a wrapper
           async function main() {
             const info = await transporterMailer.sendMail(tickMailOptions);
