@@ -79,18 +79,6 @@ router.post("/submit_ticketWebsite", async (req, res) => {
         tick_id: ticketNumber,
         ticket_closed:'Opened'
        })
-
-
-       
-
-/**
- * For this example to work, you need to set up a sending domain,
- * and obtain a token that is authorized to send from the domain.
- */
-
-          
-
-
           
   
    // email notification to sender here
